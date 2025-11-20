@@ -1,0 +1,218 @@
+@model StudentManagementSystem.Models.Student
+@{
+    ViewBag.Title = "Edit Student";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .required {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Student</h2>
+        @using (Html.BeginForm("Edit", "Students", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.StudentID)
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.FirstName)
+                <span class="required">*</span>
+                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "validation-error" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.LastName)
+                <span class="required">*</span>
+                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "validation-error" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email)
+                <span class="required">*</span>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", required = "required" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "validation-error" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.PhoneNumber)
+                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", type = "tel" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.DateOfBirth)
+                @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Address)
+                @Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = 4 })
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Update Student</button>
+                <a href="@Url.Action("Index", "Students")" class="btn btn-secondary">Cancel</a>
+            </div>
+        }
+    </div>
+
+    <script>
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Validate First Name
+            const firstName = document.querySelector('input[name="FirstName"]');
+            if (firstName.value.trim() === '') {
+                isValid = false;
+                alert('First Name is required');
+                firstName.focus();
+                e.preventDefault();
+                return;
+            }
+            
+            // Validate Last Name
+            const lastName = document.querySelector('input[name="LastName"]');
+            if (lastName.value.trim() === '') {
+                isValid = false;
+                alert('Last Name is required');
+                lastName.focus();
+                e.preventDefault();
+                return;
+            }
+            
+            // Validate Email
+            const email = document.querySelector('input[name="Email"]');
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email.value)) {
+                isValid = false;
+                alert('Please enter a valid email address');
+                email.focus();
+                e.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+</html>
